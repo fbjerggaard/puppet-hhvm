@@ -116,7 +116,7 @@ class hhvm(
   class { 'hhvm::install::build': }
 
   # create default server, port 9000
-  hhvm::service { $port_final:
+  hhvm::service { "${port_final}":
     ensure                 => $ensure,
     debugger_port          => $debugger_port_final,
     admin_server_port      => $admin_server_port_final,
