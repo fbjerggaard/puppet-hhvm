@@ -20,13 +20,13 @@ hhvm::service { "9002": }
 
 To use a nightly instead:
 
-class { "hhvm": 
+class { "hhvm":
 	use_nightly => true
 }
 
 To compile from source instead:
 
-class { "hhvm": 
+class { "hhvm":
 	compile_from_source => true,
 }
 
@@ -34,7 +34,7 @@ Puppet will most likely time out but the compilation will continue in the backgr
 
 Additional options are supported, take a look at init.pp:
 
-class { "hhvm": 
+class { "hhvm":
 	number_of_processor_cores => 2, # Use how many cores for compilation, default is all
 	date_timezone => "Europe/London", # Change your timezone (see PHP setting)
 	jit_warmup_requests => 5 # Reduce the number of jit warm up requests
@@ -72,7 +72,7 @@ vcsrepo if building from source
 https://github.com/puppetlabs/puppetlabs-vcsrepo
 
 puppet-apt if using package
-https://github.com/example42/puppet-apt
+https://github.com/puppetlabs/puppetlabs-apt
 
 Forge URL
 =========

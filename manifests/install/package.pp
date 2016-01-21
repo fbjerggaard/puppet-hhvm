@@ -7,16 +7,18 @@ class hhvm::install::package {
   } else {
     $hhvm_package_name = 'hhvm'
   }
-  
-  case $::operatingsystem {
+
+  $distro = downcase($::operatingsystem)
+
+  case $distro {
     debian,ubuntu: {
       if($hhvm::compile_from_source) {
         include hhvm::install::prerequisites
-        
+
         file { '/usr/local/src/hiphop-php':
           ensure => 'directory',
         }
-            
+
         vcsrepo { '/usr/local/src/hiphop-php/hhvm':
           ensure   => present,
           provider => git,
@@ -26,13 +28,15 @@ class hhvm::install::package {
         }
       } else {
         include apt
-        apt::key { '2048R/1BE7A449': url => 'http://dl.hhvm.com/conf/hhvm.gpg.key' }
-        
-        apt::repository { 'hhvm':
-            url        => 'http://dl.hhvm.com/ubuntu/',
-            distro     => 'trusty',
-            repository => 'main',
-            require    => Apt::Key['2048R/1BE7A449']
+        apt::key { 'hhvm':
+          id     => '2048R/1BE7A449',
+          source => 'http://dl.hhvm.com/conf/hhvm.gpg.key'
+        }
+
+        apt::source { 'hhvm':
+            location => "http://dl.hhvm.com/${distro}/",
+            repos    => $operatingsystemrelease,
+            require  => Apt::Key['2048R/1BE7A449']
         }
 
         package { $hhvm_package_name:
@@ -45,8 +49,8 @@ class hhvm::install::package {
       fail("Module ${module_name} has no config for ${::operatingsystem}")
     }
   }
-  
-  # at the moment hiphop does not load php.ini/server.ini by default 
+
+  # at the moment hiphop does not load php.ini/server.ini by default
   # and we need these for running hhvm from bash
   file { '/usr/local/bin/hhvm-cli':
     ensure  => 'file',
