@@ -29,7 +29,7 @@ class hhvm::install::package {
       } else {
         include apt
         apt::key { 'hhvm':
-          id     => '2048R/1BE7A449',
+          id     => '36AEF64D0207E7EEE352D4875A16E7281BE7A449',
           source => 'http://dl.hhvm.com/conf/hhvm.gpg.key'
         }
 
