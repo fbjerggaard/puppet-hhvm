@@ -3,6 +3,7 @@
 # This class mangaes the hhvm service on multiple ports
 define hhvm::service (
   $service_ensure         = $hhvm::service_ensure,
+  $port                   = $hhvm::port,
   $debugger_port          = $hhvm::debugger_port,
   $admin_server_port      = $hhvm::admin_server_port,
   $source_root            = $hhvm::source_root,
@@ -15,9 +16,7 @@ define hhvm::service (
   $limit                  = $hhvm::limit
 ) {
   include ::hhvm
-
-  $port = $title
-
+  
   # maintain compatibility with existing nginx setups
   $socket = regsubst("/var/run/hhvm/hhvm_${port}.sock",
             "(_${hhvm::port})",'','G')
