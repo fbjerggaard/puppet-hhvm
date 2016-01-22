@@ -2,26 +2,22 @@
 #
 # This class mangaes the hhvm service on multiple ports
 define hhvm::service (
-  $ensure = 'running',
-  $debugger_port = $hhvm::params::debugger_port,
-  $admin_server_port = $hhvm::params::admin_server_port,
-  
-  $source_root = $hhvm::params::source_root,
-  $jit_enabled = $hhvm::params::jit_enabled,
-  $jit_warmup_requests = $hhvm::params::jit_warmup_requests,
-  
-  $date_timezone = $hhvm::params::date_timezone,
-  
-  $enable_debugger = $hhvm::params::enable_debugger,
+  $ensure                 = $hhvm::params::service_ensure,
+  $debugger_port          = $hhvm::params::debugger_port,
+  $admin_server_port      = $hhvm::params::admin_server_port,
+  $source_root            = $hhvm::params::source_root,
+  $jit_enabled            = $hhvm::params::jit_enabled,
+  $jit_warmup_requests    = $hhvm::params::jit_warmup_requests,
+  $date_timezone          = $hhvm::params::date_timezone,
+  $enable_debugger        = $hhvm::params::enable_debugger,
   $enable_debugger_server = $hhvm::params::enable_debugger_server,
-  $admin_server_password = $hhvm::params::admin_server_password,
-  
-  $limit = $hhvm::params::limit
+  $admin_server_password  = $hhvm::params::admin_server_password,
+  $limit                  = $hhvm::params::limit
 ) {
   include ::hhvm
-  
+
   $port = $title
-    
+
   # maintain compatibility with existing nginx setups
   $socket = regsubst("/var/run/hhvm/hhvm_${port}.sock",
             "(_${hhvm::params::port})",'','G')
@@ -54,7 +50,7 @@ define hhvm::service (
     group   => 'root',
     content => template("${module_name}/etc/default/hhvm.erb"),
   }
-  
+
   file { $init_d:
     ensure  => 'file',
     mode    => '0755',
@@ -62,7 +58,7 @@ define hhvm::service (
     group   => 'root',
     content => template("${module_name}/etc/init.d/hhvm.erb"),
   }
-          
+
   file { $init:
     ensure  => 'file',
     owner   => 'root',
@@ -76,31 +72,31 @@ define hhvm::service (
     group   => 'root',
     content => template("${module_name}/etc/hhvm/server.ini.erb"),
   }
-    
+
   file { $php_ini:
     ensure  => 'file',
     owner   => 'root',
     group   => 'root',
     content => template("${module_name}/etc/hhvm/php.ini.erb"),
   }
-    
+
   file { $config_hdf:
     ensure  => 'file',
     owner   => 'root',
     group   => 'root',
     content => template("${module_name}/etc/hhvm/config.hdf.erb"),
   }
-  
+
   if ($hhvm::compile_from_source) {
     service { $service:
-        ensure    => $::ensure,
+        ensure    => $::service_ensure,
         hasstatus => true,
         enable    => true,
         require   => Exec['Use build-hhvm.sh']
     }
   } else {
     service { $service:
-        ensure    => $ensure,
+        ensure    => $::service_ensure,
         hasstatus => true,
         enable    => true,
         require   => Package[$hhvm::install::package::hhvm_package_name]

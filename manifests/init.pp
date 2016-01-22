@@ -8,91 +8,29 @@
 # }
 #
 class hhvm(
-  $number_of_processor_cores = $::physicalprocessorcount,
-  $compile_from_source = false,
-  $use_nightly = false,
-
-  $php_ini_cfg_append             = {},
-  $server_ini_cfg_append          = {},
-
-  $config_hdf_env_append          = {},
-  $config_hdf_dyn_ext_append      = {},
+  $number_of_processor_cores = $hhvm::params::number_of_processor_cores,
+  $compile_from_source       = $hhvm::params::compile_from_source,
+  $use_nightly               = $hhvm::params::use_nightly,
+  $php_ini_cfg_append        = $hhvm::params::php_ini_cfg_append,
+  $config_hdf_env_append     = $hhvm::params::hdf_env_append,
+  $server_ini_cfg_append     = $hhvm::params::server_ini_cfg_append,
+  $config_hdf_dyn_ext_append = $hhvm::params::hdf_dyn_ext_append,
 
   # service (port) specific
-  $port = undef,
-  $source_root = undef,
-  $admin_server_port = undef,
-  $debugger_port = undef,
-  $ensure = 'running',
-
-  $jit_enabled = undef,
-  $jit_warmup_requests = undef,
-
-  $date_timezone = undef,
-
-  $enable_debugger = undef,
-  $enable_debugger_server = undef,
-  $admin_server_password = undef,
-
+  $port                    = $hhvm::params::port,
+  $source_root             = $hhvm::params::source_root,
+  $admin_server_port       = $hhvm::params::admin_server_port,
+  $debugger_port           = $hhvm::params::debugger_port,
+  $service_ensure          = $hhvm::params::service_ensure,
+  $jit_enabled             = $hhvm::params::jit_enabled,
+  $jit_warmup_requests     = $hhvm::params::jit_warmup_requests,
+  $date_timezone           = $hhvm::params::date_timezone,
+  $enable_debugger         = $hhvm::params::enable_debugger,
+  $admin_server_password   = $hhvm::params::admin_server_password,
+  $enable_debugger_server  = $hhvm::params::enable_debugger_server,
   $disable_zend_ini_compat = $hhvm::params::disable_zend_ini_compat,
-  $limit = undef
+  $limit                   = $hhvm::params::limit,
 ) inherits hhvm::params {
-
-  $port_final = $port ? {
-    undef => $hhvm::params::port,
-    default => $port
-  }
-
-  $source_root_final = $source_root ? {
-    undef => $hhvm::params::source_root,
-    default => $source_root
-  }
-
-  $admin_server_port_final = $admin_server_port ? {
-    undef => $hhvm::params::admin_server_port,
-    default => $admin_server_port
-  }
-
-  $debugger_port_final = $debugger_port ? {
-    undef => $hhvm::params::debugger_port,
-    default => $debugger_port
-  }
-
-  $jit_enabled_final = $jit_enabled ? {
-    undef => $hhvm::params::jit_enabled,
-    default => $jit_enabled
-  }
-
-  $jit_warmup_requests_final = $jit_warmup_requests ? {
-    undef => $hhvm::params::jit_warmup_requests,
-    default => $jit_warmup_requests
-  }
-
-  $date_timezone_final = $date_timezone ? {
-    undef => $hhvm::params::date_timezone,
-    default => $date_timezone
-  }
-
-  $enable_debugger_final = $enable_debugger ? {
-    undef => $hhvm::params::enable_debugger,
-    default => $enable_debugger
-  }
-
-  $enable_debugger_server_final = $enable_debugger_server ? {
-    undef => $hhvm::params::enable_debugger_server,
-    default => $enable_debugger_server
-  }
-
-  $admin_server_password_final = $admin_server_password ? {
-    undef => $hhvm::params::admin_server_password,
-    default => $admin_server_password
-  }
-
-  $limit_final = $limit ? {
-    undef => $hhvm::params::limit,
-    default => $limit
-  }
-
   if($compile_from_source) {
     $path_to_hhvm = '/usr/local/bin/hhvm'
   } else {
@@ -116,18 +54,18 @@ class hhvm(
   class { 'hhvm::install::build': }
 
   # create default server, port 9000
-  hhvm::service { "${port_final}":
-    ensure                 => $ensure,
-    debugger_port          => $debugger_port_final,
-    admin_server_port      => $admin_server_port_final,
-    source_root            => $source_root_final,
-    jit_enabled            => $jit_enabled_final,
-    jit_warmup_requests    => $jit_warmup_requests_final,
-    date_timezone          => $date_timezone_final,
-    enable_debugger        => $enable_debugger_final,
-    enable_debugger_server => $enable_debugger_server_final,
-    admin_server_password  => $admin_server_password_final,
-    limit                  => $limit_final
+  hhvm::service { "${port}":
+    ensure                 => $service_ensure,
+    debugger_port          => $debugger_port,
+    admin_server_port      => $admin_server_port,
+    source_root            => $source_root,
+    jit_enabled            => $jit_enabled,
+    jit_warmup_requests    => $jit_warmup_requests,
+    date_timezone          => $date_timezone,
+    enable_debugger        => $enable_debugger,
+    enable_debugger_server => $enable_debugger_server,
+    admin_server_password  => $admin_server_password,
+    limit                  => $limit
   }
 
   anchor { 'hhvm::begin': }
