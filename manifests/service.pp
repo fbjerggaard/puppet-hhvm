@@ -2,17 +2,17 @@
 #
 # This class mangaes the hhvm service on multiple ports
 define hhvm::service (
-  $ensure                 = $hhvm::params::service_ensure,
-  $debugger_port          = $hhvm::params::debugger_port,
-  $admin_server_port      = $hhvm::params::admin_server_port,
-  $source_root            = $hhvm::params::source_root,
-  $jit_enabled            = $hhvm::params::jit_enabled,
-  $jit_warmup_requests    = $hhvm::params::jit_warmup_requests,
-  $date_timezone          = $hhvm::params::date_timezone,
-  $enable_debugger        = $hhvm::params::enable_debugger,
-  $enable_debugger_server = $hhvm::params::enable_debugger_server,
-  $admin_server_password  = $hhvm::params::admin_server_password,
-  $limit                  = $hhvm::params::limit
+  $service_ensure         = $hhvm::service_ensure,
+  $debugger_port          = $hhvm::debugger_port,
+  $admin_server_port      = $hhvm::admin_server_port,
+  $source_root            = $hhvm::source_root,
+  $jit_enabled            = $hhvm::jit_enabled,
+  $jit_warmup_requests    = $hhvm::jit_warmup_requests,
+  $date_timezone          = $hhvm::date_timezone,
+  $enable_debugger        = $hhvm::enable_debugger,
+  $enable_debugger_server = $hhvm::enable_debugger_server,
+  $admin_server_password  = $hhvm::admin_server_password,
+  $limit                  = $hhvm::limit
 ) {
   include ::hhvm
 
@@ -20,29 +20,29 @@ define hhvm::service (
 
   # maintain compatibility with existing nginx setups
   $socket = regsubst("/var/run/hhvm/hhvm_${port}.sock",
-            "(_${hhvm::params::port})",'','G')
+            "(_${hhvm::port})",'','G')
   $service =  regsubst("hhvm_${port}",
-              "(_${hhvm::params::port})",'','G')
+              "(_${hhvm::port})",'','G')
   $default =  regsubst("/etc/default/hhvm_${port}",
-              "(_${hhvm::params::port})",'','G')
+              "(_${hhvm::port})",'','G')
   $init_d = regsubst("/etc/init.d/hhvm_${port}",
-            "(_${hhvm::params::port})",'','G')
+            "(_${hhvm::port})",'','G')
   $init = regsubst("/etc/init/hhvm_${port}.conf",
-          "(_${hhvm::params::port})",'','G')
+          "(_${hhvm::port})",'','G')
   $server_ini = regsubst("/etc/hhvm/server_${port}.ini",
-                "(_${hhvm::params::port})",'','G')
+                "(_${hhvm::port})",'','G')
   $php_ini =  regsubst("/etc/hhvm/php_${port}.ini",
-              "(_${hhvm::params::port})",'','G')
+              "(_${hhvm::port})",'','G')
   $config_hdf = regsubst("/etc/hhvm/config_${port}.hdf",
-                "(_${hhvm::params::port})",'','G')
+                "(_${hhvm::port})",'','G')
   $jit_repo = regsubst("/tmp/.hhvm_${port}.hhbc",
-              "(_${hhvm::params::port})",'','G')
+              "(_${hhvm::port})",'','G')
   $error_log =  regsubst("/var/log/hhvm/error_${port}.log",
-                "(_${hhvm::params::port})",'','G')
+                "(_${hhvm::port})",'','G')
   $pid =  regsubst("/var/run/hhvm/hhvm_${port}.pid",
-          "(_${hhvm::params::port})",'','G')
+          "(_${hhvm::port})",'','G')
   $admin_server_log = regsubst("/var/log/hhvm/admin_${port}.log",
-                      "(_${hhvm::params::port})",'','G')
+                      "(_${hhvm::port})",'','G')
 
   file { $default:
     ensure  => 'file',
@@ -89,14 +89,14 @@ define hhvm::service (
 
   if ($hhvm::compile_from_source) {
     service { $service:
-        ensure    => $::service_ensure,
+        ensure    => $service_ensure,
         hasstatus => true,
         enable    => true,
         require   => Exec['Use build-hhvm.sh']
     }
   } else {
     service { $service:
-        ensure    => $::service_ensure,
+        ensure    => $service_ensure,
         hasstatus => true,
         enable    => true,
         require   => Package[$hhvm::install::package::hhvm_package_name]
