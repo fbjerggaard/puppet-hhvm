@@ -1,15 +1,15 @@
 # hhvm::params - set default options
 class hhvm::params {
 
-  $number_of_processor_cores = $::physicalprocessorcount,
-  $compile_from_source = false,
-  $use_nightly = false,
-  $php_ini_cfg_append             = {},
-  $server_ini_cfg_append          = {},
-  $config_hdf_env_append          = {},
-  $config_hdf_dyn_ext_append      = {},
+  $number_of_processor_cores = $::physicalprocessorcount
+  $compile_from_source = false
+  $use_nightly = false
+  $php_ini_cfg_append             = {}
+  $server_ini_cfg_append          = {}
+  $config_hdf_env_append          = {}
+  $config_hdf_dyn_ext_append      = {}
 
-  $service_ensure = 'running',
+  $service_ensure = 'running'
 
   $path_to_source_hhvm = '/usr/local/src/hiphop-php/hhvm/hphp/hhvm/hhvm'
 
