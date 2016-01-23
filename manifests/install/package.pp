@@ -27,7 +27,8 @@ class hhvm::install::package {
           require  => File['/usr/local/src/hiphop-php']
         }
       } else {
-        include apt
+        include ::apt
+        Exec['apt_update'] -> Package[$hhvm_package_name]
         apt::key { 'hhvm':
           id     => '36AEF64D0207E7EEE352D4875A16E7281BE7A449',
           source => 'http://dl.hhvm.com/conf/hhvm.gpg.key'
