@@ -41,7 +41,7 @@ class hhvm::install::package {
 
         package { $hhvm_package_name:
           ensure  => installed,
-          require => Apt::Repository['hhvm']
+          require => Apt::Source['hhvm']
         }
       }
     }
