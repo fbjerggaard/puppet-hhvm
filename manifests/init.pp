@@ -55,7 +55,7 @@ class hhvm(
 
   # create default server, port 9000
   hhvm::service { "hhvm_${port}":
-    service_ensure         => $service_ensure,
+    ensure                 => $service_ensure,
     port                   => $port,
     debugger_port          => $debugger_port,
     admin_server_port      => $admin_server_port,
