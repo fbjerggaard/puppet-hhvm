@@ -35,8 +35,8 @@ class hhvm::install::package {
 
         apt::source { 'hhvm':
             location => "http://dl.hhvm.com/${distro}/",
-            repos    => $operatingsystemrelease,
-            require  => Apt::Key['2048R/1BE7A449']
+            repos    => $::operatingsystemrelease,
+            require  => Apt::Key['hhvm']
         }
 
         package { $hhvm_package_name:
